@@ -1037,6 +1037,20 @@ radiator: {
         }
     });
 
+    document.addEventListener("DOMContentLoaded", () => {
+    const readMoreBtn = document.getElementById("readMoreBtn");
+    const fadeContainer = document.querySelector(".introduction-fade-container");
+
+    if (readMoreBtn && fadeContainer) {
+      readMoreBtn.addEventListener("click", () => {
+      fadeContainer.classList.toggle("expanded");
+      readMoreBtn.textContent = fadeContainer.classList.contains("expanded")
+        ? "Read Less"
+        : "Read More";
+     });
+     }
+   });
+
     window.addEventListener('alpine:init', () => {
         initializeApp();
     });
