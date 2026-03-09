@@ -1,4 +1,3 @@
-// Unit conversion utility
 function convertUnits(value, from, to) {
     if (isNaN(value) || !from || !to) return NaN;
     if (from === to) return value;
@@ -12,9 +11,9 @@ function convertUnits(value, from, to) {
     return value * (conversions[from]?.[to] || 1);
 }
 
-    const productsMap = {
+const productsMap = {
 
-"aggregates": {
+    "aggregates": {
         "name": "Aggregates",
         "img": `<svg class="category-thumb" xmlns=http://www.w3.org/2000/svg baseProfile="tiny" version="1.2" viewBox="0 0 120 120">
             <circle cx="60" cy="60" r="59.5" fill="#fff"/>
@@ -23,7 +22,7 @@ function convertUnits(value, from, to) {
                 <path d="M74.42,25.23l21.78,43.54c.74,1.48-.34,3.23-1.99,3.23h-43.54c-1.66,0-2.73-1.74-1.99-3.23l21.75-43.54c.82-1.64,3.16-1.64,3.99,0Z" fill="#009845" stroke="#fff" stroke-miterlimit="10" stroke-width="1.2"/>
             </g>
             </svg>
-        `,        
+        `,
         "categories": [
             {
                 "name": "Concrete Sand",
@@ -285,9 +284,9 @@ function convertUnits(value, from, to) {
 };
 
 function initializeApp() {
-    // Carousel setup
+   
     let materials = ["aggregates", "bricks-and-blocks", "floorboards", "insulation", "paving", "radiators", "tiling", "timber-decking"];
-   const carousels = [];
+    const carousels = [];
     const prevButtons = [];
     const nextButtons = [];
     const carouselContainers = [];
@@ -324,7 +323,6 @@ function initializeApp() {
         carouselContainers.push(container);
         carouselIndexMap[material] = 0;
 
-        // Clear existing content
         carousel.innerHTML = '';
 
         const category = productsMap[material];
@@ -365,7 +363,6 @@ function initializeApp() {
             carousel.appendChild(item);
         });
 
-        // Hide navigation buttons for single-item carousels
         if (uniqueProducts.length <= 1) {
             prevBtn.classList.add('hidden');
             nextBtn.classList.add('hidden');
@@ -456,608 +453,527 @@ function initializeApp() {
     window.addEventListener('resize', updateCarousels);
     updateCarousels();
 
-        // Calculators
-        const calculators = {
-            aggregates: {
-                elements: {
-                    length: document.getElementById('aggregate-length'),
-                    width: document.getElementById('aggregate-width'),
-                    depth: document.getElementById('aggregate-depth'),
-                    lengthUnit: document.getElementById('aggregate-length-unit'),
-                    widthUnit: document.getElementById('aggregate-width-unit'),
-                    depthUnit: document.getElementById('aggregate-depth-unit'),
-                    output: document.getElementById('aggregate-output'),
-                    type: document.getElementById('aggregate-type')
-                },
-                grabs: {
-                    "Sand": 850,
-                    "Decorative Stone": 850,
-                    "Sand & Stone Ballast": 850,
-                    "Stone & Gravel": 850
-                },
-                calculate: function () {
-                    const { length, width, depth, lengthUnit, widthUnit, depthUnit, output, type } = this.elements;
-
-                    const l = convertUnits(parseFloat(length.value), lengthUnit.value, 'm');
-                    const w = convertUnits(parseFloat(width.value), widthUnit.value, 'm');
-                    const d = convertUnits(parseFloat(depth.value), depthUnit.value, 'm');
-                    const volume = l * w * d;
-
-                    if (isNaN(volume)) {
-                        output.innerHTML = "";
-                        return;
-                    }
-
-                    const totalWeight = volume * 2000;
-                    const grabWeight = this.grabs[type.value] || 850;
-                    const halfGrabWeight = grabWeight / 2;
-
-                    const fullGrabs = Math.floor(totalWeight / grabWeight);
-                    const remainingAfterFull = totalWeight - (fullGrabs * grabWeight);
-
-                    const halfGrabs = Math.floor(remainingAfterFull / halfGrabWeight);
-                    const remainingAfterHalf = remainingAfterFull - (halfGrabs * halfGrabWeight);
-
-                    const handiBags = Math.ceil(remainingAfterHalf / 20);
-
-                    output.innerHTML = `
-                        <div class="material-results">
-                            <p>Results</p>
-                            <p>Please note these figures are a guide and offer no guarantee that the quantity specified will be enough for your project.</p>
-                            <br>
-                        </div>
-                        <p class="font-bold text-xl">Volume: ${volume.toFixed(3)} m<sup>3</sup></p>
-                        <p class="font-bold text-xl">Weight: ${totalWeight.toFixed(0)} kg</p>
-                        <div style="margin-top: 12px">
-                            <p>Full Grab Bags (~${grabWeight}kg): ${fullGrabs}</p>
-                            <p>Half Grab Bags (~${halfGrabWeight}kg): ${halfGrabs}</p>
-                            <p>Handi-Bags (~20kg): ${handiBags}</p>
-                        </div>`;
-                },
-                init: function () {
-                    const inputs = Object.values(this.elements).filter(el => el);
-                    inputs.forEach(el => {
-                        if (!el) console.error('Missing DOM element in aggregates:', Object.keys(this.elements).find(key => this.elements[key] === el));
-                        el.addEventListener('input', () => this.calculate());
-                    });
-                    this.calculate();
-                }
+    const calculators = {
+        aggregates: {
+            elements: {
+                length: document.getElementById('aggregate-length'),
+                width: document.getElementById('aggregate-width'),
+                depth: document.getElementById('aggregate-depth'),
+                lengthUnit: document.getElementById('aggregate-length-unit'),
+                widthUnit: document.getElementById('aggregate-width-unit'),
+                depthUnit: document.getElementById('aggregate-depth-unit'),
+                output: document.getElementById('aggregate-output'),
+                type: document.getElementById('aggregate-type')
             },
-            bricks: {
-                elements: {
-                    length: document.getElementById('wall-length'),
-                    height: document.getElementById('wall-height'),
-                    lengthUnit: document.getElementById('wall-length-unit'),
-                    heightUnit: document.getElementById('wall-height-unit'),
-                    output: document.getElementById('brick-output'),
-                    wastage: document.getElementById('brick-wastage'),
-                    brickLength: document.getElementById('brick-length'),
-                    brickWidth: document.getElementById('brick-width'),
-                    brickHeight: document.getElementById('brick-height'),
-                    mortarJoint: document.getElementById('mortar-joint'),
-                    area: document.getElementById('wall-area'),
-                    toggle: document.getElementById('brick-block-toggle'),
-                    toggleText: document.getElementById('brick-block-toggle-text'),
-                    toggleTitle: document.getElementById('brick-block-toggle-title')
-                },
-                setDefault: function() {
-                    const { brickLength, brickWidth, brickHeight, toggle, toggleText, toggleTitle } = this.elements;
-                    if (!toggle.checked) {
-                        brickLength.value = 440;
-                        brickWidth.value = 140;
-                        brickHeight.value = 215;
-                        toggleText.innerHTML = "Change to Bricks";
-                        toggleTitle.innerHTML = "Block dimensions:";
-                        document.getElementById("brick-length-label").innerText = "Length";
-                        document.getElementById("brick-width-label").innerText = "Height";
-                        document.getElementById("brick-height-label").innerText = "Width";
-                    } else {
-                        brickLength.value = 215;
-                        brickWidth.value = 102.5;
-                        brickHeight.value = 65;
-                        toggleText.innerHTML = "Change to Blocks";
-                        toggleTitle.innerHTML = "Brick dimensions:";
-                        document.getElementById("brick-length-label").innerText = "Length";
-                        document.getElementById("brick-width-label").innerText = "Width";
-                        document.getElementById("brick-height-label").innerText = "Height";
-                    }
-                    this.calculate();
-                },
-                calculate: function() {
-                    const { length, height, lengthUnit, heightUnit, output, wastage, brickLength, brickHeight, mortarJoint, area } = this.elements;
-                    const l = convertUnits(parseFloat(length.value), lengthUnit.value, 'm');
-                    const h = convertUnits(parseFloat(height.value), heightUnit.value, 'm');
-                    const a = l * h;
-                    area.value = isNaN(a) ? "" : a.toFixed(2);
-                    const bl = parseFloat(brickLength.value) / 1000;
-                    const bh = parseFloat(brickHeight.value) / 1000;
-                    const mj = parseFloat(mortarJoint.value) / 1000;
-                    const bricksPerM2 = 1 / ((bl + mj) * (bh + mj));
-                    let totalBricks = a * bricksPerM2;
-                    if (wastage.checked) totalBricks *= 1.05;
-                    output.innerHTML = isNaN(a) ? "" : `
-                        <div class="material-results">
-                            <p>Results</p>
-                            <p>Please note these figures are a guide and offer no guarantee that the quantity specified will be enough for your project.</p>
-                            <br>
-                        </div>
-                        <p>Wall Area: ${a.toFixed(2)} m²</p>
-                        <p class="font-bold text-xl">Number of ${this.elements.toggle.checked ? 'Bricks' : 'Blocks'} Needed: ${Math.ceil(totalBricks)}</p>
-                        <div style="margin-top: 4px">
-                            <p>Wastage: ${wastage.checked ? '5% included' : 'Not included'}</p>
-                            <p>${this.elements.toggle.checked ? 'Bricks' : 'Blocks'} Dimensions: ${brickLength.value}mm x ${this.elements.brickWidth.value}mm x ${brickHeight.value}mm</p>
-                            <p>Mortar Joint: ${mortarJoint.value}mm</p>
-                        </div>`;
-                },
-                init: function() {
-                    const inputs = Object.values(this.elements).filter(el => el);
-                    inputs.forEach(el => {
-                        if (!el) console.error('Missing DOM element in bricks:', Object.keys(this.elements).find(key => this.elements[key] === el));
-                        el.addEventListener('input', () => this.calculate());
-                    });
-                    this.elements.toggle.addEventListener('change', () => this.setDefault());
-                    this.setDefault();
-                }
+            grabs: {
+                "Sand": 850,
+                "Decorative Stone": 850,
+                "Sand & Stone Ballast": 850,
+                "Stone & Gravel": 850
             },
-            flooring: {
-                elements: {
-                    length: document.getElementById('flooring-room-length'),
-                    width: document.getElementById('flooring-room-width'),
-                    lengthUnit: document.getElementById('flooring-room-length-unit'),
-                    widthUnit: document.getElementById('flooring-room-width-unit'),
-                    output: document.getElementById('flooring-output'),
-                    wastage: document.getElementById('board-wastage'),
-                    boardLength: document.getElementById('flooring-board-length'),
-                    boardWidth: document.getElementById('flooring-board-width'),
-                    area: document.getElementById('flooring-area')
-                },
-                setBoardSize: function(value) {
-                    const [length, width] = value.split('x');
-                    this.elements.boardLength.value = length;
-                    this.elements.boardWidth.value = width;
-                    this.calculate();
-                },
-                calculate: function() {
-                    const { length, width, lengthUnit, widthUnit, output, wastage, boardLength, boardWidth, area } = this.elements;
-                    const l = convertUnits(parseFloat(length.value), lengthUnit.value, 'm');
-                    const w = convertUnits(parseFloat(width.value), widthUnit.value, 'm');
-                    const a = l * w;
-                    area.value = isNaN(a) ? "" : a.toFixed(2);
-                    const bl = 1; //parseFloat(boardLength.value) / 1000;
-                    let bw = parseFloat(boardWidth.value);
-                    if (bw < 125) bw = 125;
-                    else if (bw > 150) bw = 150;
-                    boardWidth.value = bw;
-                    bw = (bw - 11) / 1000;
-                    const boardsPerM2 = 1 / (bl * bw);
-                    let totalBoards = a * boardsPerM2;
-                    if (wastage.checked) totalBoards *= 1.05;
-                    const totalLengthMeters = totalBoards * bl;
-                    output.innerHTML = (isNaN(a) || bw * 1000 < 1) ? "" : `
-                        <div class="material-results">
-                            <p>Results</p>
-                            <p>Please note these figures are a guide and offer no guarantee that the quantity specified will be enough for your project.</p>
-                            <br>
-                        </div>
-                        <p>Flooring Area: ${a.toFixed(2)} m²</p>
-                        <p class="font-bold text-xl">Linear Meterage: ${totalLengthMeters.toFixed(2)} meters</p>
-                        <div style="margin-top: 12px">
-                            <p>Wastage: ${wastage.checked ? '5% included' : 'Not included'}</p>
-                            <p>Floorboard Width: ${boardWidth.value}mm</p>
-                            <p>Please note, our 125 and 150mm wide floorboards have a respective coverage of 114 and 139mm.</p>
-                        </div>`;
-                },
-                init: function() {
-                    const inputs = Object.values(this.elements).filter(el => el);
-                    inputs.forEach(el => {
-                        if (!el) console.error('Missing DOM element in flooring:', Object.keys(this.elements).find(key => this.elements[key] === el));
-                        el.addEventListener('input', () => this.calculate());
-                    });
-                    this.calculate();
-                }
-            },
-            insulation: {
-                elements: {
-                    length: document.getElementById('insulation-area-length'),
-                    width: document.getElementById('insulation-area-width'),
-                    lengthUnit: document.getElementById('insulation-area-length-unit'),
-                    widthUnit: document.getElementById('insulation-area-width-unit'),
-                    output: document.getElementById('insulation-output'),
-                    thickness: document.getElementById('roll-thickness'),
-                    rollWidth: document.getElementById('roll-width'),
-                    rollLength: document.getElementById('roll-length'),
-                    area: document.getElementById('insulation-area')
-                },
-                setRollSpecs: function(value) {
-                    const [thickness, width, length] = value.split('x');
-                    this.elements.thickness.value = thickness;
-                    this.elements.rollWidth.value = width;
-                    this.elements.rollLength.value = parseInt(length) / 1000;
-                    this.calculate();
-                },
-                calculate: function() {
-                    const { length, width, lengthUnit, widthUnit, output, thickness, rollWidth, rollLength, area } = this.elements;
-                    const l = convertUnits(parseFloat(length.value), lengthUnit.value, 'm');
-                    const w = convertUnits(parseFloat(width.value), widthUnit.value, 'm');
-                    const a = l * w;
-                    area.value = isNaN(a) ? "" : a.toFixed(2);
-                    const rl = parseFloat(rollLength.value);
-                    const rw = parseFloat(rollWidth.value) / 1000;
-                    const rollsPerM2 = 1 / (rl * rw);
-                    const totalRolls = a * rollsPerM2;
-                    output.innerHTML = isNaN(a) ? "" : `
-                        <div class="material-results">
-                            <p>Results</p>
-                            <p>Please note these figures are a guide and offer no guarantee that the quantity specified will be enough for your project.</p>
-                            <br>
-                        </div>
-                        <p>Insulation Area: ${a.toFixed(2)} m²</p>
-                        <p class="font-bold text-xl">Number of Insulation Rolls Needed: ${Math.ceil(totalRolls)}</p>
-                        <p>Roll Dimensions: ${rollLength.value} metres x ${rollWidth.value} x ${thickness.value}mm</p>`;
-                },
-                init: function() {
-                    const inputs = Object.values(this.elements).filter(el => el);
-                    inputs.forEach(el => {
-                        if (!el) console.error('Missing DOM element in insulation:', Object.keys(this.elements).find(key => this.elements[key] === el));
-                        el.addEventListener('input', () => this.calculate());
-                    });
-                    this.calculate();
-                }
-            },
+            calculate: function () {
+                const { length, width, depth, lengthUnit, widthUnit, depthUnit, output, type } = this.elements;
 
+                const l = convertUnits(parseFloat(length.value), lengthUnit.value, 'm');
+                const w = convertUnits(parseFloat(width.value), widthUnit.value, 'm');
+                const d = convertUnits(parseFloat(depth.value), depthUnit.value, 'm');
+                const volume = l * w * d;
 
-
-
-
-
-            tiling: {
-    elements: {
-        length: document.getElementById('tiling-room-length'),
-        width: document.getElementById('tiling-room-width'),
-        lengthUnit: document.getElementById('tiling-room-length-unit'),
-        widthUnit: document.getElementById('tiling-room-width-unit'),
-        output: document.getElementById('tile-output'),
-        wastage: document.getElementById('tile-wastage'),
-        tileLength: document.getElementById('tile-length'),
-        tileWidth: document.getElementById('tile-width'),
-        area: document.getElementById('tiling-area')
-    },
-    calculate: function() {
-        const { length, width, lengthUnit, widthUnit, output, wastage, tileLength, tileWidth, area } = this.elements;
-
-        const l = convertUnits(parseFloat(length.value), lengthUnit.value, 'm');
-        const w = convertUnits(parseFloat(width.value), widthUnit.value, 'm');
-        const a = l * w;
-        area.value = isNaN(a) ? "" : a.toFixed(2);
-
-        const tl = parseFloat(tileLength.value) / 1000;  // mm to meters
-        const tw = parseFloat(tileWidth.value) / 1000;   // mm to meters
-
-        const tilesPerM2 = 1 / (tl * tw);
-        let totalTiles = a * tilesPerM2;
-
-        if (wastage.checked) totalTiles *= 1.1;
-
-        output.innerHTML = (isNaN(a) || isNaN(totalTiles)) ? "" : `
-            <div class="material-results">
-                <p>Results</p>
-                <p>Please note these figures are a guide and offer no guarantee that the quantity specified will be enough for your project.</p>
-                <br>
-            </div>
-            <p>Tiling Area: ${a.toFixed(2)} m²</p>
-            <p class="font-bold text-xl">Number of Tiles Needed: ${Math.ceil(totalTiles)}</p>
-            <p>Wastage: ${wastage.checked ? '10% included' : 'Not included'}</p>
-            <p>Tile Dimensions: ${tileLength.value}mm x ${tileWidth.value}mm</p>
-        `;
-    },
-    init: function() {
-        const inputs = Object.values(this.elements).filter(el => el);
-        inputs.forEach(el => el.addEventListener('input', () => this.calculate()));
-        this.calculate();
-    }
-},
-
-            paving: {
-                elements: {
-                    length: document.getElementById('paving-paving-area-length'),
-                    width: document.getElementById('paving-paving-area-width'),
-                    lengthUnit: document.getElementById('paving-paving-area-length-unit'),
-                    widthUnit: document.getElementById('paving-paving-area-width-unit'),
-                    output: document.getElementById('paving-tile-output'),
-                    wastage: document.getElementById('paving-tile-wastage'),
-                    tileLength: document.getElementById('paving-tile-length'),
-                    tileWidth: document.getElementById('paving-tile-width'),
-                    area: document.getElementById('paving-paving-area')
-                },
-                calculate: function() {
-                    const { length, width, lengthUnit, widthUnit, output, wastage, tileLength, tileWidth, area } = this.elements;
-                    const l = convertUnits(parseFloat(length.value), lengthUnit.value, 'm');
-                    const w = convertUnits(parseFloat(width.value), widthUnit.value, 'm');
-                    const a = l * w;
-                    area.value = isNaN(a) ? "" : a.toFixed(2);
-                    const tl = parseFloat(tileLength.value) / 1000;
-                    const tw = parseFloat(tileWidth.value) / 1000;
-                    const tilesPerM2 = 1 / (tl * tw);
-                    let totalTiles = a * tilesPerM2;
-                    if (wastage.checked) totalTiles *= 1.1;
-                    output.innerHTML = isNaN(a) ? "" : `
-                        <div class="material-results">
-                            <p>Results</p>
-                            <p>Please note these figures are a guide and offer no guarantee that the quantity specified will be enough for your project.</p>
-                            <br>
-                        </div>
-                        <p>Paving Area: ${a.toFixed(2)} m²</p>
-                        <p class="font-bold text-xl">Number of Block, Slab, or Setts Needed: ${Math.ceil(totalTiles)}</p>
-                        <p>Wastage: ${wastage.checked ? '10% included' : 'Not included'}</p>
-                        <p>Paving Dimensions: ${tileLength.value}mm x ${tileWidth.value}mm</p>`;
-                },
-                init: function() {
-                    const inputs = Object.values(this.elements).filter(el => el);
-                    inputs.forEach(el => {
-                        if (!el) console.error('Missing DOM element in paving:', Object.keys(this.elements).find(key => this.elements[key] === el));
-                        el.addEventListener('input', () => this.calculate());
-                    });
-                    this.calculate();
-                }
-            },
-  radiators: {
-        elements: {
-            length: document.getElementById('room-length'),
-            width: document.getElementById('room-width'),
-            height: document.getElementById('room-height'),
-            lengthUnit: document.getElementById('room-length-unit'),
-            widthUnit: document.getElementById('room-width-unit'),
-            heightUnit: document.getElementById('room-height-unit'),
-            output: document.getElementById('room-output'),
-            doubleGlazed: document.getElementById('double-glazed'),
-            frenchDoors: document.getElementById('french-doors'),
-            roomType: document.getElementById('room-type'),
-            calculateCheckbox: document.getElementById('radiator-calculate')
-        },
-        calculate: function() {
-            const {
-                length, width, height,
-                lengthUnit, widthUnit, heightUnit,
-                output, doubleGlazed, frenchDoors,
-                roomType, calculateCheckbox
-            } = this.elements;
-
-            // Clear output if checkbox is unchecked or missing
-            if (!calculateCheckbox || !calculateCheckbox.checked) {
-                output.innerHTML = '';
-                return;
-            }
-
-            // Validate inputs
-            const l = convertUnits(parseFloat(length.value), lengthUnit.value, 'm');
-            const w = convertUnits(parseFloat(width.value), widthUnit.value, 'm');
-            const h = convertUnits(parseFloat(height.value), heightUnit.value, 'm');
-            const volume = l * w * h;
-
-            // Clear output if calculations are invalid
-            if (isNaN(volume)) {
-                output.innerHTML = '';
-                return;
-            }
-
-            const windowFactorMap = {
-                'Kitchen': [81, 109, 136],
-                'Bathroom': [122, 135, 149],
-                'Bedroom': [108, 120, 132],
-                'Dining Room': [135, 150, 165]
-            };
-
-            let windowFactor = 0;
-            if (doubleGlazed.checked && frenchDoors.checked) {
-                windowFactor = 1;
-            } else if (frenchDoors.checked) {
-                windowFactor = 2;
-            }
-
-            const factors = windowFactorMap[roomType.value] || [108, 120, 132];
-            const btu = volume * factors[windowFactor];
-
-            output.innerHTML = `
-                <div class="material-results">
-                    <p>Results</p>
-                    <p>Please note these figures are a guide and offer no guarantee.</p>
-                    <br>
-                </div>
-                <p class="font-bold text-xl">Room Type: ${roomType.value}</p>
-                <p class="font-bold text-xl">Volume: ${volume.toFixed(2)} m<sup>3</sup></p>
-                <p class="font-bold text-xl">Estimated BTU Required: ${Math.round(btu)} BTU</p>
-                <p>Window Types: ${[
-                    doubleGlazed.checked ? 'Double Glazed' : '',
-                    frenchDoors.checked ? 'French Doors' : ''
-                ].filter(Boolean).join(', ') || 'None selected'}</p>
-            `;
-        },
-        init: function() {
-            const inputs = Object.values(this.elements).filter(el => el);
-            inputs.forEach(el => {
-                if (!el) {
-                    console.error('Missing DOM element in radiators:', Object.keys(this.elements).find(key => this.elements[key] === el));
+                if (isNaN(volume)) {
+                    output.innerHTML = "";
                     return;
                 }
-                el.addEventListener('input', () => this.calculate());
-            });
-            this.calculate();
-        }
-    },
 
+                const totalWeight = volume * 2000;
+                const grabWeight = this.grabs[type.value] || 850;
+                const halfGrabWeight = grabWeight / 2;
 
-radiator: {
-    elements: {
-        length: document.getElementById('room-length'),
-        width: document.getElementById('room-width'),
-        height: document.getElementById('room-height'),
-        lengthUnit: document.getElementById('room-length-unit'),
-        widthUnit: document.getElementById('room-width-unit'),
-        heightUnit: document.getElementById('room-height-unit'),
-        roomType: document.getElementById('room-type'),
-        doubleGlazed: document.getElementById('double-glazed'),
-        frenchDoors: document.getElementById('french-doors'),
-        output: document.getElementById('room-output')
-    },
-    calculate: function() {
-        const { length, width, height, lengthUnit, widthUnit, heightUnit, roomType, doubleGlazed, frenchDoors, output } = this.elements;
+                const fullGrabs = Math.floor(totalWeight / grabWeight);
+                const remainingAfterFull = totalWeight - (fullGrabs * grabWeight);
 
-        const l = convertUnits(parseFloat(length.value), lengthUnit.value, "m");
-        const w = convertUnits(parseFloat(width.value), widthUnit.value, "m");
-        const h = convertUnits(parseFloat(height.value), heightUnit.value, "m");
-        const volume = l * w * h;
+                const halfGrabs = Math.floor(remainingAfterFull / halfGrabWeight);
+                const remainingAfterHalf = remainingAfterFull - (halfGrabs * halfGrabWeight);
 
-        const windowFactorMap = {
-            "Kitchen": [81, 0, 136],
-            "Bathroom": [122, 0, 149],
-            "Bedroom": [108, 0, 132],
-            "Dining Room": [135, 0, 165]
-        };
+                const handiBags = Math.ceil(remainingAfterHalf / 20);
 
-        let btu;
-        if (doubleGlazed.checked) {
-            btu = volume * windowFactorMap[roomType.value][0];
-        } else if (frenchDoors.checked) {
-            btu = volume * windowFactorMap[roomType.value][2];
-        } else {
-            btu = NaN;
-        }
-
-        output.innerHTML = isNaN(btu) ? "" : `
-            <div class="material-results">
-                <p>Results</p>
-                <p>Please note these figures are a guide and offer no guarantee.</p>
-                <br>
-            </div>
-            <p class="font-bold text-xl">Room Type: ${roomType.value}</p>
-            <p class="font-bold text-xl">Volume: ${isNaN(volume) ? 0 : volume.toFixed(2)} m<sup>3</sup></p>
-            <p class="font-bold text-xl">Estimated BTU Required: ${Math.round(btu)} BTU</p>
-            <p>Window Types: ${[doubleGlazed.checked ? 'Double Glazed' : '', frenchDoors.checked ? 'French Doors' : ''].filter(Boolean).join(", ") || "None selected"}</p>
-        `;
-    },
-    init: function() {
-        const { doubleGlazed, frenchDoors } = this.elements;
-
-        const inputs = Object.values(this.elements).filter(el => el);
-        inputs.forEach(el => {
-            el.addEventListener('input', () => this.calculate());
-            el.addEventListener('change', () => this.calculate());
-        });
-
-        // Enforce only one checkbox checked at a time
-        doubleGlazed.addEventListener('change', () => {
-            if (doubleGlazed.checked) {
-                frenchDoors.checked = false;
+                output.innerHTML = `
+                    <div class="material-results">
+                        <p>Results</p>
+                        <p>Please note these figures are a guide and offer no guarantee that the quantity specified will be enough for your project.</p>
+                        <br>
+                    </div>
+                    <p class="font-bold text-xl">Volume: ${volume.toFixed(3)} m<sup>3</sup></p>
+                    <p class="font-bold text-xl">Weight: ${totalWeight.toFixed(0)} kg</p>
+                    <div style="margin-top: 12px">
+                        <p>Full Grab Bags (~${grabWeight}kg): ${fullGrabs}</p>
+                        <p>Half Grab Bags (~${halfGrabWeight}kg): ${halfGrabs}</p>
+                        <p>Handi-Bags (~20kg): ${handiBags}</p>
+                    </div>`;
+            },
+            init: function () {
+                const inputs = Object.values(this.elements).filter(el => el);
+                inputs.forEach(el => {
+                    if (!el) console.error('Missing DOM element in aggregates:', Object.keys(this.elements).find(key => this.elements[key] === el));
+                    el.addEventListener('input', () => this.calculate());
+                });
                 this.calculate();
             }
-        });
+        },
 
-        frenchDoors.addEventListener('change', () => {
-            if (frenchDoors.checked) {
-                doubleGlazed.checked = false;
-                this.calculate();
-            }
-        });
-
-        this.calculate();
-    }
-},
-
-
-
-
-            decking: {
-                elements: {
-                    length: document.getElementById('decking-deck-length'),
-                    width: document.getElementById('decking-deck-width'),
-                    lengthUnit: document.getElementById('decking-deck-length-unit'),
-                    widthUnit: document.getElementById('decking-deck-width-unit'),
-                    output: document.getElementById('decking-output'),
-                    wastage: document.getElementById('decking-board-wastage'),
-                    boardLength: document.getElementById('decking-board-length'),
-                    boardWidth: document.getElementById('decking-board-width'),
-                    area: document.getElementById('decking-decking-area')
-                },
-                setBoardLength: function(value) {
-                    const [length, width] = value.split('x');
-                    this.elements.boardLength.value = length;
-                    this.elements.boardWidth.value = width;
-                    this.calculate();
-                },
-                calculate: function() {
-                    const { length, width, lengthUnit, widthUnit, output, wastage, boardLength, boardWidth, area } = this.elements;
-                    const l = convertUnits(parseFloat(length.value), lengthUnit.value, 'm');
-                    const w = convertUnits(parseFloat(width.value), widthUnit.value, 'm');
-                    const a = l * w;
-                    area.value = isNaN(a) ? "" : a.toFixed(2);
-                    const bl = parseFloat(boardLength.value) / 1000;
-                    const bw = parseFloat(boardWidth.value) / 1000;
-                    const boardsPerM2 = 1 / (bl * bw);
-                    let totalBoards = a * boardsPerM2;
-                    if (wastage.checked) totalBoards *= 1.05;
-                    if (parseFloat(boardWidth.value) == 125) totalBoards *= 1.04404761905;
-                    else if (parseFloat(boardWidth.value) == 100) totalBoards *= 1.064;
-                    const linearMeters = totalBoards * bl;
-                    output.innerHTML = (isNaN(a) || isNaN(totalBoards) || isNaN(linearMeters)) ? "" : `
-                        <div class="material-results">
-                            <p>Results</p>
-                            <p>Please note these figures are a guide and offer no guarantee that the quantity specified will be enough for your project.</p>
-                            <br>
-                        </div>
-                        <p>Decking Area: ${a.toFixed(2)} m²</p>
-                        <div style="margin-top: 4px">
-                            <p class="font-bold text-xl">Number of Decking Boards Needed: ${Math.ceil(totalBoards)}</p>
-                            <p>Total Linear Meters: ${linearMeters.toFixed(2)} m</p>
-                            <p>Wastage: ${wastage.checked ? '5% included' : 'Not included'}</p>
-                            <p>Board Dimensions: ${boardLength.value}mm x ${boardWidth.value}mm</p>
-                            <p>These quantities are only for the decking and not the frame.</p>
-                        </div>`;
-                },
-                init: function() {
-                    const inputs = Object.values(this.elements).filter(el => el);
-                    inputs.forEach(el => {
-                        if (!el) console.error('Missing DOM element in decking:', Object.keys(this.elements).find(key => this.elements[key] === el));
-                        el.addEventListener('input', () => this.calculate());
-                    });
-                    this.calculate();
+        bricks: {
+            elements: {
+                length: document.getElementById('wall-length'),
+                height: document.getElementById('wall-height'),
+                lengthUnit: document.getElementById('wall-length-unit'),
+                heightUnit: document.getElementById('wall-height-unit'),
+                output: document.getElementById('brick-output'),
+                wastage: document.getElementById('brick-wastage'),
+                brickLength: document.getElementById('brick-length'),
+                brickWidth: document.getElementById('brick-width'),
+                brickHeight: document.getElementById('brick-height'),
+                mortarJoint: document.getElementById('mortar-joint'),
+                area: document.getElementById('wall-area'),
+                toggle: document.getElementById('brick-block-toggle'),
+                toggleText: document.getElementById('brick-block-toggle-text'),
+                toggleTitle: document.getElementById('brick-block-toggle-title')
+            },
+            setDefault: function() {
+                const { brickLength, brickWidth, brickHeight, toggle, toggleText, toggleTitle } = this.elements;
+                if (!toggle.checked) {
+                    brickLength.value = 440;
+                    brickWidth.value = 140;
+                    brickHeight.value = 215;
+                    toggleText.innerHTML = "Change to Bricks";
+                    toggleTitle.innerHTML = "Block dimensions:";
+                    document.getElementById("brick-length-label").innerText = "Length";
+                    document.getElementById("brick-width-label").innerText = "Height";
+                    document.getElementById("brick-height-label").innerText = "Width";
+                } else {
+                    brickLength.value = 215;
+                    brickWidth.value = 102.5;
+                    brickHeight.value = 65;
+                    toggleText.innerHTML = "Change to Blocks";
+                    toggleTitle.innerHTML = "Brick dimensions:";
+                    document.getElementById("brick-length-label").innerText = "Length";
+                    document.getElementById("brick-width-label").innerText = "Width";
+                    document.getElementById("brick-height-label").innerText = "Height";
                 }
+                this.calculate();
+            },
+            calculate: function() {
+                const { length, height, lengthUnit, heightUnit, output, wastage, brickLength, brickHeight, mortarJoint, area } = this.elements;
+                const l = convertUnits(parseFloat(length.value), lengthUnit.value, 'm');
+                const h = convertUnits(parseFloat(height.value), heightUnit.value, 'm');
+                const a = l * h;
+                area.value = isNaN(a) ? "" : a.toFixed(2);
+                const bl = parseFloat(brickLength.value) / 1000;
+                const bh = parseFloat(brickHeight.value) / 1000;
+                const mj = parseFloat(mortarJoint.value) / 1000;
+                const bricksPerM2 = 1 / ((bl + mj) * (bh + mj));
+                let totalBricks = a * bricksPerM2;
+                if (wastage.checked) totalBricks *= 1.05;
+                output.innerHTML = isNaN(a) ? "" : `
+                    <div class="material-results">
+                        <p>Results</p>
+                        <p>Please note these figures are a guide and offer no guarantee that the quantity specified will be enough for your project.</p>
+                        <br>
+                    </div>
+                    <p>Wall Area: ${a.toFixed(2)} m²</p>
+                    <p class="font-bold text-xl">Number of ${this.elements.toggle.checked ? 'Bricks' : 'Blocks'} Needed: ${Math.ceil(totalBricks)}</p>
+                    <div style="margin-top: 4px">
+                        <p>Wastage: ${wastage.checked ? '5% included' : 'Not included'}</p>
+                        <p>${this.elements.toggle.checked ? 'Bricks' : 'Blocks'} Dimensions: ${brickLength.value}mm x ${this.elements.brickWidth.value}mm x ${brickHeight.value}mm</p>
+                        <p>Mortar Joint: ${mortarJoint.value}mm</p>
+                    </div>`;
+            },
+            init: function() {
+                const inputs = Object.values(this.elements).filter(el => el);
+                inputs.forEach(el => {
+                    if (!el) console.error('Missing DOM element in bricks:', Object.keys(this.elements).find(key => this.elements[key] === el));
+                    el.addEventListener('input', () => this.calculate());
+                });
+                this.elements.toggle.addEventListener('change', () => this.setDefault());
+                this.setDefault();
             }
-        };
+        },
 
-        Object.values(calculators).forEach(calc => calc.init());
-    }
+        flooring: {
+            elements: {
+                length: document.getElementById('flooring-room-length'),
+                width: document.getElementById('flooring-room-width'),
+                lengthUnit: document.getElementById('flooring-room-length-unit'),
+                widthUnit: document.getElementById('flooring-room-width-unit'),
+                output: document.getElementById('flooring-output'),
+                wastage: document.getElementById('board-wastage'),
+                boardLength: document.getElementById('flooring-board-length'),
+                boardWidth: document.getElementById('flooring-board-width'),
+                area: document.getElementById('flooring-area')
+            },
+            setBoardSize: function(value) {
+                const [length, width] = value.split('x');
+                this.elements.boardLength.value = length;
+                this.elements.boardWidth.value = width;
+                this.calculate();
+            },
+            calculate: function() {
+                const { length, width, lengthUnit, widthUnit, output, wastage, boardLength, boardWidth, area } = this.elements;
+                const l = convertUnits(parseFloat(length.value), lengthUnit.value, 'm');
+                const w = convertUnits(parseFloat(width.value), widthUnit.value, 'm');
+                const a = l * w;
+                area.value = isNaN(a) ? "" : a.toFixed(2);
+                const bl = 1;
+                let bw = parseFloat(boardWidth.value);
+                if (bw < 125) bw = 125;
+                else if (bw > 150) bw = 150;
+                boardWidth.value = bw;
+                bw = (bw - 11) / 1000;
+                const boardsPerM2 = 1 / (bl * bw);
+                let totalBoards = a * boardsPerM2;
+                if (wastage.checked) totalBoards *= 1.05;
+                const totalLengthMeters = totalBoards * bl;
+                output.innerHTML = (isNaN(a) || bw * 1000 < 1) ? "" : `
+                    <div class="material-results">
+                        <p>Results</p>
+                        <p>Please note these figures are a guide and offer no guarantee that the quantity specified will be enough for your project.</p>
+                        <br>
+                    </div>
+                    <p>Flooring Area: ${a.toFixed(2)} m²</p>
+                    <p class="font-bold text-xl">Linear Meterage: ${totalLengthMeters.toFixed(2)} meters</p>
+                    <div style="margin-top: 12px">
+                        <p>Wastage: ${wastage.checked ? '5% included' : 'Not included'}</p>
+                        <p>Floorboard Width: ${boardWidth.value}mm</p>
+                        <p>Please note, our 125 and 150mm wide floorboards have a respective coverage of 114 and 139mm.</p>
+                    </div>`;
+            },
+            init: function() {
+                const inputs = Object.values(this.elements).filter(el => el);
+                inputs.forEach(el => {
+                    if (!el) console.error('Missing DOM element in flooring:', Object.keys(this.elements).find(key => this.elements[key] === el));
+                    el.addEventListener('input', () => this.calculate());
+                });
 
-    document.addEventListener('DOMContentLoaded', () => {
-        if (!window.Alpine) {
-            console.warn('Alpine.js not loaded, initializing manually');
-            initializeApp();
+                this.calculate();
+            }
+        },
+
+        insulation: {
+            elements: {
+                length: document.getElementById('insulation-area-length'),
+                width: document.getElementById('insulation-area-width'),
+                lengthUnit: document.getElementById('insulation-area-length-unit'),
+                widthUnit: document.getElementById('insulation-area-width-unit'),
+                output: document.getElementById('insulation-output'),
+                thickness: document.getElementById('roll-thickness'),
+                rollWidth: document.getElementById('roll-width'),
+                rollLength: document.getElementById('roll-length'),
+                area: document.getElementById('insulation-area')
+            },
+            setRollSpecs: function(value) {
+                const [thickness, width, length] = value.split('x');
+                this.elements.thickness.value = thickness;
+                this.elements.rollWidth.value = width;
+                this.elements.rollLength.value = parseInt(length) / 1000;
+                this.calculate();
+            },
+            calculate: function() {
+                const { length, width, lengthUnit, widthUnit, output, thickness, rollWidth, rollLength, area } = this.elements;
+                const l = convertUnits(parseFloat(length.value), lengthUnit.value, 'm');
+                const w = convertUnits(parseFloat(width.value), widthUnit.value, 'm');
+                const a = l * w;
+                area.value = isNaN(a) ? "" : a.toFixed(2);
+                const rl = parseFloat(rollLength.value);
+                const rw = parseFloat(rollWidth.value) / 1000;
+                const rollsPerM2 = 1 / (rl * rw);
+                const totalRolls = a * rollsPerM2;
+                output.innerHTML = isNaN(a) ? "" : `
+                    <div class="material-results">
+                        <p>Results</p>
+                        <p>Please note these figures are a guide and offer no guarantee that the quantity specified will be enough for your project.</p>
+                        <br>
+                    </div>
+                    <p>Insulation Area: ${a.toFixed(2)} m²</p>
+                    <p class="font-bold text-xl">Number of Insulation Rolls Needed: ${Math.ceil(totalRolls)}</p>
+                    <p>Roll Dimensions: ${rollLength.value} metres x ${rollWidth.value} x ${thickness.value}mm</p>`;
+            },
+            init: function() {
+                const inputs = Object.values(this.elements).filter(el => el);
+                inputs.forEach(el => {
+                    if (!el) console.error('Missing DOM element in insulation:', Object.keys(this.elements).find(key => this.elements[key] === el));
+                    el.addEventListener('input', () => this.calculate());
+                });
+
+                window.setRollSpecs = (value) => this.setRollSpecs(value);
+                const rollSpecsSelect = document.querySelector('select[onchange*="setRollSpecs"]');
+                if (rollSpecsSelect && rollSpecsSelect.value) this.setRollSpecs(rollSpecsSelect.value);
+
+                this.calculate();
+            }
+        },
+
+        tiling: {
+            elements: {
+                length: document.getElementById('tiling-room-length'),
+                width: document.getElementById('tiling-room-width'),
+                lengthUnit: document.getElementById('tiling-room-length-unit'),
+                widthUnit: document.getElementById('tiling-room-width-unit'),
+                output: document.getElementById('tile-output'),
+                wastage: document.getElementById('tile-wastage'),
+                tileLength: document.getElementById('tile-length'),
+                tileWidth: document.getElementById('tile-width'),
+                area: document.getElementById('tiling-area')
+            },
+            calculate: function() {
+                const { length, width, lengthUnit, widthUnit, output, wastage, tileLength, tileWidth, area } = this.elements;
+
+                const l = convertUnits(parseFloat(length.value), lengthUnit.value, 'm');
+                const w = convertUnits(parseFloat(width.value), widthUnit.value, 'm');
+                const a = l * w;
+                area.value = isNaN(a) ? "" : a.toFixed(2);
+
+                const tl = parseFloat(tileLength.value) / 1000;
+                const tw = parseFloat(tileWidth.value) / 1000;
+
+                const tilesPerM2 = 1 / (tl * tw);
+                let totalTiles = a * tilesPerM2;
+
+                if (wastage.checked) totalTiles *= 1.1;
+
+                output.innerHTML = (isNaN(a) || isNaN(totalTiles)) ? "" : `
+                    <div class="material-results">
+                        <p>Results</p>
+                        <p>Please note these figures are a guide and offer no guarantee that the quantity specified will be enough for your project.</p>
+                        <br>
+                    </div>
+                    <p>Tiling Area: ${a.toFixed(2)} m²</p>
+                    <p class="font-bold text-xl">Number of Tiles Needed: ${Math.ceil(totalTiles)}</p>
+                    <p>Wastage: ${wastage.checked ? '10% included' : 'Not included'}</p>
+                    <p>Tile Dimensions: ${tileLength.value}mm x ${tileWidth.value}mm</p>
+                `;
+            },
+            init: function() {
+                const inputs = Object.values(this.elements).filter(el => el);
+                inputs.forEach(el => el.addEventListener('input', () => this.calculate()));
+                this.calculate();
+            }
+        },
+
+        paving: {
+            elements: {
+                length: document.getElementById('paving-paving-area-length'),
+                width: document.getElementById('paving-paving-area-width'),
+                lengthUnit: document.getElementById('paving-paving-area-length-unit'),
+                widthUnit: document.getElementById('paving-paving-area-width-unit'),
+                output: document.getElementById('paving-tile-output'),
+                wastage: document.getElementById('paving-tile-wastage'),
+                tileLength: document.getElementById('paving-tile-length'),
+                tileWidth: document.getElementById('paving-tile-width'),
+                area: document.getElementById('paving-paving-area')
+            },
+            calculate: function() {
+                const { length, width, lengthUnit, widthUnit, output, wastage, tileLength, tileWidth, area } = this.elements;
+                const l = convertUnits(parseFloat(length.value), lengthUnit.value, 'm');
+                const w = convertUnits(parseFloat(width.value), widthUnit.value, 'm');
+                const a = l * w;
+                area.value = isNaN(a) ? "" : a.toFixed(2);
+                const tl = parseFloat(tileLength.value) / 1000;
+                const tw = parseFloat(tileWidth.value) / 1000;
+                const tilesPerM2 = 1 / (tl * tw);
+                let totalTiles = a * tilesPerM2;
+                if (wastage.checked) totalTiles *= 1.1;
+                output.innerHTML = isNaN(a) ? "" : `
+                    <div class="material-results">
+                        <p>Results</p>
+                        <p>Please note these figures are a guide and offer no guarantee that the quantity specified will be enough for your project.</p>
+                        <br>
+                    </div>
+                    <p>Paving Area: ${a.toFixed(2)} m²</p>
+                    <p class="font-bold text-xl">Number of Block, Slab, or Setts Needed: ${Math.ceil(totalTiles)}</p>
+                    <p>Wastage: ${wastage.checked ? '10% included' : 'Not included'}</p>
+                    <p>Paving Dimensions: ${tileLength.value}mm x ${tileWidth.value}mm</p>`;
+            },
+            init: function() {
+                const inputs = Object.values(this.elements).filter(el => el);
+                inputs.forEach(el => {
+                    if (!el) console.error('Missing DOM element in paving:', Object.keys(this.elements).find(key => this.elements[key] === el));
+                    el.addEventListener('input', () => this.calculate());
+                });
+                this.calculate();
+            }
+        },
+
+        radiator: {
+            elements: {
+                length: document.getElementById('room-length'),
+                width: document.getElementById('room-width'),
+                height: document.getElementById('room-height'),
+                lengthUnit: document.getElementById('room-length-unit'),
+                widthUnit: document.getElementById('room-width-unit'),
+                heightUnit: document.getElementById('room-height-unit'),
+                roomType: document.getElementById('room-type'),
+                doubleGlazed: document.getElementById('double-glazed'),
+                frenchDoors: document.getElementById('french-doors'),
+                output: document.getElementById('room-output')
+            },
+            calculate: function() {
+                const { length, width, height, lengthUnit, widthUnit, heightUnit, roomType, doubleGlazed, frenchDoors, output } = this.elements;
+
+                const l = convertUnits(parseFloat(length.value), lengthUnit.value, "m");
+                const w = convertUnits(parseFloat(width.value), widthUnit.value, "m");
+                const h = convertUnits(parseFloat(height.value), heightUnit.value, "m");
+                const volume = l * w * h;
+
+                const windowFactorMap = {
+                    "Kitchen": [81, 0, 136],
+                    "Bathroom": [121.5, 0, 148.5],
+                    "Bedroom": [108, 0, 132],
+                    "Dining Room": [135, 0, 165],
+                    "Lounge": [135, 0, 165],
+                    "Hallway": [81, 0, 136]
+                };
+
+                let btu;
+                if (doubleGlazed.checked) {
+                    btu = volume * windowFactorMap[roomType.value][0];
+                } else if (frenchDoors.checked) {
+                    btu = volume * windowFactorMap[roomType.value][2];
+                } else {
+                    btu = NaN;
+                }
+
+                output.innerHTML = isNaN(btu) ? "" : `
+                    <div class="material-results">
+                        <p>Results</p>
+                        <p>Please note these figures are a guide and offer no guarantee.</p>
+                        <br>
+                    </div>
+                    <p class="font-bold text-xl">Room Type: ${roomType.value}</p>
+                    <p class="font-bold text-xl">Volume: ${isNaN(volume) ? 0 : volume.toFixed(2)} m<sup>3</sup></p>
+                    <p class="font-bold text-xl">Estimated BTU Required: ${Math.round(btu)} BTU</p>
+                    <p>Window Types: ${[doubleGlazed.checked ? 'Double Glazed' : '', frenchDoors.checked ? 'French Doors' : ''].filter(Boolean).join(", ") || "None selected"}</p>
+                `;
+            },
+            init: function() {
+                const { doubleGlazed, frenchDoors } = this.elements;
+
+                const inputs = Object.values(this.elements).filter(el => el);
+                inputs.forEach(el => {
+                    el.addEventListener('input', () => this.calculate());
+                    el.addEventListener('change', () => this.calculate());
+                });
+
+                doubleGlazed.addEventListener('change', () => {
+                    if (doubleGlazed.checked) {
+                        frenchDoors.checked = false;
+                        this.calculate();
+                    }
+                });
+
+                frenchDoors.addEventListener('change', () => {
+                    if (frenchDoors.checked) {
+                        doubleGlazed.checked = false;
+                        this.calculate();
+                    }
+                });
+
+                this.calculate();
+            }
+        },
+
+        decking: {
+            elements: {
+                length: document.getElementById('decking-deck-length'),
+                width: document.getElementById('decking-deck-width'),
+                lengthUnit: document.getElementById('decking-deck-length-unit'),
+                widthUnit: document.getElementById('decking-deck-width-unit'),
+                output: document.getElementById('decking-output'),
+                wastage: document.getElementById('decking-board-wastage'),
+                boardLength: document.getElementById('decking-board-length'),
+                boardWidth: document.getElementById('decking-board-width'),
+                area: document.getElementById('decking-decking-area')
+            },
+            setBoardLength: function(value) {
+                const [length, width] = value.split('x');
+                this.elements.boardLength.value = length;
+                this.elements.boardWidth.value = width;
+                this.calculate();
+            },
+            calculate: function() {
+                const { length, width, lengthUnit, widthUnit, output, wastage, boardLength, boardWidth, area } = this.elements;
+                const l = convertUnits(parseFloat(length.value), lengthUnit.value, 'm');
+                const w = convertUnits(parseFloat(width.value), widthUnit.value, 'm');
+                const a = l * w;
+                area.value = isNaN(a) ? "" : a.toFixed(2);
+                const bl = parseFloat(boardLength.value) / 1000;
+                const bw = parseFloat(boardWidth.value) / 1000;
+                const boardsPerM2 = 1 / (bl * bw);
+                let totalBoards = a * boardsPerM2;
+                if (wastage.checked) totalBoards *= 1.05;
+                if (parseFloat(boardWidth.value) == 125) totalBoards *= 1.04404761905;
+                else if (parseFloat(boardWidth.value) == 100) totalBoards *= 1.064;
+                const linearMeters = totalBoards * bl;
+                output.innerHTML = (isNaN(a) || isNaN(totalBoards) || isNaN(linearMeters)) ? "" : `
+                    <div class="material-results">
+                        <p>Results</p>
+                        <p>Please note these figures are a guide and offer no guarantee that the quantity specified will be enough for your project.</p>
+                        <br>
+                    </div>
+                    <p>Decking Area: ${a.toFixed(2)} m²</p>
+                    <div style="margin-top: 4px">
+                        <p class="font-bold text-xl">Number of Decking Boards Needed: ${Math.ceil(totalBoards)}</p>
+                        <p>Total Linear Meters: ${linearMeters.toFixed(2)} m</p>
+                        <p>Wastage: ${wastage.checked ? '5% included' : 'Not included'}</p>
+                        <p>Board Dimensions: ${boardLength.value}mm x ${boardWidth.value}mm</p>
+                        <p>These quantities are only for the decking and not the frame.</p>
+                    </div>`;
+            },
+            init: function() {
+                const inputs = Object.values(this.elements).filter(el => el);
+                inputs.forEach(el => {
+                    if (!el) console.error('Missing DOM element in decking:', Object.keys(this.elements).find(key => this.elements[key] === el));
+                    el.addEventListener('input', () => this.calculate());
+                });
+
+                window.setdeckingBoardLength = (value) => this.setBoardLength(value);
+                const boardSizeSelect = document.querySelector('select[onchange*="setdeckingBoardLength"]');
+                if (boardSizeSelect && boardSizeSelect.value) this.setBoardLength(boardSizeSelect.value);
+
+                this.calculate();
+            }
         }
-    });
+    };
+
+    Object.values(calculators).forEach(calc => calc.init());
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (!window.Alpine) {
+        console.warn('Alpine.js not loaded, initializing manually');
+        initializeApp();
+    }
+});
 
 document.addEventListener("DOMContentLoaded", () => {
+    const container = document.querySelector(".intro-container");
+    const btn = document.getElementById("readMoreBtn");
 
-  const container = document.querySelector(".intro-container");
-  const btn = document.getElementById("readMoreBtn");
+    if (!container || !btn) return;
+    btn.setAttribute("aria-expanded", "false");
 
-  if (!container || !btn) return;
-  btn.setAttribute("aria-expanded", "false");
+    btn.addEventListener("click", () => {
+        const isExpanded = container.classList.toggle("expanded");
+        btn.textContent = isExpanded ? "Read Less" : "Read More";
+        btn.setAttribute("aria-expanded", isExpanded);
 
-  btn.addEventListener("click", () => {
-    const isExpanded = container.classList.toggle("expanded");
-    btn.textContent = isExpanded ? "Read Less" : "Read More";
-    btn.setAttribute("aria-expanded", isExpanded);
-
-    if (isExpanded) {
-      setTimeout(() => {
-        container.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      }, 300);
-    } else {
-      container.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  });
-
+        if (isExpanded) {
+            setTimeout(() => {
+                container.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }, 300);
+        } else {
+            container.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    });
 });
 
 window.addEventListener('alpine:init', () => {
-  initializeApp();
+    initializeApp();
 });
