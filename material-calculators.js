@@ -400,19 +400,19 @@ function btuCalc() {
         : 'TRV + lockshield valve';
 
     const sysNote = sys === '1pipe'
-        ? 'Single-pipe system: the hot water cools as it travels around the loop, so radiators further along will be cooler - size them 15-20% larger to compensate'
+        ? 'Single-pipe system: water cools as it travels around the loop, so radiators further along the circuit will run cooler - size them 15–20% larger to compensate'
         : sys === 'ufh'
-        ? 'Underfloor heating only: check that your floor can deliver enough heat at the water temperature you have chosen'
-        : 'Standard two-pipe system: each radiator gets the same flow temperature, so the sizing above applies directly';
+        ? 'Underfloor heating only: check that the floor construction can deliver sufficient heat output at the selected water temperature'
+        : 'Standard two-pipe system: each radiator receives approximately the same flow temperature, so the sizing above applies directly';
 
     btuG('btu-headline').textContent = 'Your room needs approximately ' + Math.round(rawBTU).toLocaleString() + ' BTU/hr (' + Math.round(adjW).toLocaleString() + 'W) of heating';
     btuG('btu-rec').innerHTML     = '<strong>Required heating output:</strong> Minimum ' + recBTU.toLocaleString() + ' BTU/hr (' + corrW.toLocaleString() + 'W)';
     btuG('btu-size').innerHTML    = '<strong>Suggested radiator size:</strong> ' + btuGetRadSize(wpr, recType);
     btuG('btu-qty').innerHTML     = '<strong>Quantity required:</strong> ' + nRad + ' radiator' + (nRad > 1 ? 's' : '');
-    btuG('btu-watts').innerHTML   = '<span style="font-size:0.85em; color:#666; display:block; margin-top:10px; margin-bottom:20px"><strong>Please note:</strong> This figure includes a ' + (highLoss ? '15' : '10') + '% safety margin' + (highLoss ? ' (applied due to higher heat loss conditions)' : '') + '</span>';
+    btuG('btu-watts').innerHTML   = '<span style="font-size:0.85em; color:#666; display:block; margin-top:10px; margin-bottom:20px"><strong>Please note:</strong> This figure includes a ' + (highLoss ? '15' : '10') + '% buffer' + (highLoss ? ' (applied due to higher heat loss conditions)' : '') + '</span>';
 
     btuG('s5').innerHTML   = '<strong>Output needed:</strong> Each radiator must deliver at least ' + wpr.toLocaleString() + 'W at your flow temperature' + (nRad > 1 ? ', split across ' + nRad + ' radiators' : '');
-    btuG('s1').innerHTML   = '<strong>System:</strong> Hot water runs at +' + flowT + '\u00b0C into the radiator and returns at +' + retT + '\u00b0C. ' + sysNote;
+    btuG('s1').innerHTML   = '<strong>System:</strong> Heating water enters the radiator at +' + flowT + '\u00b0C into the radiator and returns at +' + retT + '\u00b0C. ' + sysNote;
     btuG('s6').textContent = '';
     btuG('s7').textContent = '';
 
